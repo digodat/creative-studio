@@ -41,6 +41,7 @@ import {
 } from '../common/components/image-selector/image-selector.component';
 import {
   GenerationModelConfig,
+  isGeminiOmniFlash,
   MODEL_CONFIGS,
 } from '../common/config/model-config';
 import {JobStatus, MediaItem} from '../common/models/media-item.model';
@@ -328,8 +329,9 @@ export class VideoComponent implements OnInit, AfterViewInit {
     this.searchRequest.style = state.style;
     this.searchRequest.colorAndTone = state.colorAndTone;
     this.searchRequest.lighting = state.lighting;
-    this.searchRequest.numberOfMedia =
-      state.model === 'gemini-omni-flash-preview' ? 1 : state.numberOfMedia;
+    this.searchRequest.numberOfMedia = isGeminiOmniFlash(state.model)
+      ? 1
+      : state.numberOfMedia;
     this.selectedOutputs.set(this.searchRequest.numberOfMedia || 1);
     this.searchRequest.durationSeconds = state.durationSeconds;
     this.searchRequest.composition = state.composition;
@@ -400,7 +402,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
       this.selectedAspectRatio = landscapeOption.viewValue;
     }
 
-    if (model.value === 'gemini-omni-flash-preview') {
+    if (isGeminiOmniFlash(model.value)) {
       this.searchRequest.numberOfMedia = 1;
       this.selectedOutputs.set(1);
     }
@@ -1590,7 +1592,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
         m => m.value === 'gemini-omni-flash-preview',
       );
       if (omniModel) {
-        if (this.searchRequest.generationModel !== omniModel.value) {
+        if (!isGeminiOmniFlash(this.searchRequest.generationModel)) {
           this.selectModel(omniModel);
           handleSuccessSnackbar(
             this._snackBar,
@@ -1713,7 +1715,7 @@ export class VideoComponent implements OnInit, AfterViewInit {
         m => m.value === 'gemini-omni-flash-preview',
       );
       if (omniModel) {
-        if (this.searchRequest.generationModel !== omniModel.value) {
+        if (!isGeminiOmniFlash(this.searchRequest.generationModel)) {
           this.selectModel(omniModel);
           handleSuccessSnackbar(
             this._snackBar,

@@ -205,6 +205,7 @@ class CreateVeoDto(BaseDto):
                 GenerationModelEnum.VEO_3_1_FAST_GENERATE_001,
                 GenerationModelEnum.GEMINI_OMNI,
                 GenerationModelEnum.GEMINI_OMNI_FLASH_PREVIEW,
+                GenerationModelEnum.GEMINI_OMNI_1_1_FLASH,
             }
             if model not in supported_reference_models:
                 raise ValueError(
@@ -213,8 +214,10 @@ class CreateVeoDto(BaseDto):
                     f"'{GenerationModelEnum.VEO_3_1_GENERATE_001.value}' model, "
                     f"'{GenerationModelEnum.VEO_3_1_LITE_GENERATE_001.value}' model, "
                     f"'{GenerationModelEnum.VEO_3_1_FAST_GENERATE_001.value}' model, "
-                    f"'{GenerationModelEnum.GEMINI_OMNI.value}' model, or "
-                    f"'{GenerationModelEnum.GEMINI_OMNI_FLASH_PREVIEW.value}' model.",
+                    f"'{GenerationModelEnum.GEMINI_OMNI.value}' model, "
+                    f"'{GenerationModelEnum.GEMINI_OMNI_FLASH_PREVIEW.value}' "
+                    "model, or "
+                    f"'{GenerationModelEnum.GEMINI_OMNI_1_1_FLASH.value}' model.",
                 )
 
             start_image_present = bool(self.start_image_asset_id)
@@ -232,7 +235,9 @@ class CreateVeoDto(BaseDto):
                 )
 
         # Validate model-specific resolution limits
-        if model in (
+        if model == GenerationModelEnum.GEMINI_OMNI_1_1_FLASH:
+            allowed_resolutions = {"1K", "2K", "4K"}
+        elif model in (
             GenerationModelEnum.GEMINI_OMNI,
             GenerationModelEnum.GEMINI_OMNI_FLASH_PREVIEW,
         ):
@@ -253,6 +258,7 @@ class CreateVeoDto(BaseDto):
         if model in (
             GenerationModelEnum.GEMINI_OMNI,
             GenerationModelEnum.GEMINI_OMNI_FLASH_PREVIEW,
+            GenerationModelEnum.GEMINI_OMNI_1_1_FLASH,
         ):
             max_duration = 10
 
@@ -288,6 +294,7 @@ class CreateVeoDto(BaseDto):
         valid_video_ratios = [
             GenerationModelEnum.GEMINI_OMNI,
             GenerationModelEnum.GEMINI_OMNI_FLASH_PREVIEW,
+            GenerationModelEnum.GEMINI_OMNI_1_1_FLASH,
             GenerationModelEnum.VEO_3_1_PREVIEW,
             GenerationModelEnum.VEO_3_1_GENERATE_001,
             GenerationModelEnum.VEO_3_1_LITE_GENERATE_001,

@@ -67,6 +67,7 @@ VIDEO_RESOLUTION_MAP = {
 def _format_omni_prompt(
     prompt: str,
     aspect_ratio: AspectRatioEnum | str | None,
+    resolution: str = "720p",
 ) -> str:
     """Formats prompt with aspect ratio and resolution directives for Gemini Omni."""
     if (
@@ -75,14 +76,20 @@ def _format_omni_prompt(
         and "vertical" not in prompt.lower()
         and "portrait" not in prompt.lower()
     ):
-        return f"{prompt}\nAspect ratio: 9:16 vertical portrait format. Resolution: 720p."
+        return (
+            f"{prompt}\nAspect ratio: 9:16 vertical portrait format. "
+            f"Resolution: {resolution}."
+        )
     if (
         aspect_ratio == AspectRatioEnum.RATIO_16_9
         and "16:9" not in prompt
         and "widescreen" not in prompt.lower()
         and "landscape" not in prompt.lower()
     ):
-        return f"{prompt}\nAspect ratio: 16:9 widescreen landscape format. Resolution: 720p."
+        return (
+            f"{prompt}\nAspect ratio: 16:9 widescreen landscape format. "
+            f"Resolution: {resolution}."
+        )
     return prompt
 
 
@@ -378,11 +385,20 @@ def _process_video_in_background(
                         if request_dto.generation_model in [
                             GenerationModelEnum.GEMINI_OMNI,
                             GenerationModelEnum.GEMINI_OMNI_FLASH_PREVIEW,
+                            GenerationModelEnum.GEMINI_OMNI_1_1_FLASH,
                         ]:
                             worker_logger.info(
                                 "Running Gemini Omni video generation via Interactions API..."
                             )
                             vertex_client = GenAIModelSetup.get_omni_client()
+                            omni_resolution = "720p"
+                            if (
+                                request_dto.generation_model
+                                == GenerationModelEnum.GEMINI_OMNI_1_1_FLASH
+                            ):
+                                omni_resolution = VIDEO_RESOLUTION_MAP.get(
+                                    request_dto.resolution, "720p"
+                                )
 
                             interaction_id = None
                             thought_signature = None
@@ -508,7 +524,9 @@ def _process_video_in_background(
                                     parent_video_bytes = f.read()
 
                                 omni_prompt = _format_omni_prompt(
-                                    request_dto.prompt, request_dto.aspect_ratio
+                                    request_dto.prompt,
+                                    request_dto.aspect_ratio,
+                                    omni_resolution,
                                 )
 
                                 turn2_input = [
@@ -556,7 +574,9 @@ def _process_video_in_background(
                                     "Performing Turn 1 Video Generation/R2V"
                                 )
                                 omni_prompt = _format_omni_prompt(
-                                    request_dto.prompt, request_dto.aspect_ratio
+                                    request_dto.prompt,
+                                    request_dto.aspect_ratio,
+                                    omni_resolution,
                                 )
 
                                 t1_inputs = [
@@ -630,6 +650,13 @@ def _process_video_in_background(
                                 "type": "video",
                                 "duration": duration_str,
                             }
+                            if (
+                                request_dto.generation_model
+                                == GenerationModelEnum.GEMINI_OMNI_1_1_FLASH
+                            ):
+                                omni_response_format["resolution"] = (
+                                    omni_resolution
+                                )
 
                             num_outputs = 1
                             worker_logger.info(

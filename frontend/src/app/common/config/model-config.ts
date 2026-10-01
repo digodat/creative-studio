@@ -39,6 +39,21 @@ export interface ModelCapability {
   supportsSeed?: boolean;
 }
 
+/** Omni Flash models that share the Interactions API video path. */
+export const GEMINI_OMNI_FLASH_MODEL_IDS = [
+  'gemini-omni-flash-preview',
+  'gemini-omni-1.1-flash',
+] as const;
+
+export function isGeminiOmniFlash(
+  model: string | null | undefined,
+): boolean {
+  return (
+    !!model &&
+    (GEMINI_OMNI_FLASH_MODEL_IDS as readonly string[]).includes(model)
+  );
+}
+
 export interface GenerationModelConfig {
   value: string; // API value
   viewValue: string; // Display name
@@ -236,6 +251,24 @@ export const MODEL_CONFIGS: GenerationModelConfig[] = [
       maxReferenceImages: 3,
       supportedAspectRatios: ['16:9', '9:16'],
       supportedResolutions: [],
+      supportedDurations: [4, 6, 8, 10],
+      supportsAudio: true,
+    },
+  },
+  {
+    value: 'gemini-omni-1.1-flash',
+    viewValue: 'Gemini Omni 1.1 Flash',
+    type: 'VIDEO',
+    icon: 'layers',
+    capabilities: {
+      supportedModes: [
+        'Text to Video',
+        'Ingredients to Video',
+        'Frames to Video',
+      ],
+      maxReferenceImages: 3,
+      supportedAspectRatios: ['16:9', '9:16'],
+      supportedResolutions: ['1K', '2K', '4K'],
       supportedDurations: [4, 6, 8, 10],
       supportsAudio: true,
     },

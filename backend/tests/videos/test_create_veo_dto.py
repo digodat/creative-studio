@@ -172,6 +172,18 @@ def test_validate_resolution_by_model():
 
 
 def test_validate_duration_seconds():
+    # 10s and 4K are valid for Gemini Omni 1.1 Flash
+    dto_omni_11 = CreateVeoDto(
+        prompt="Test",
+        workspace_id=1,
+        generation_model=GenerationModelEnum.GEMINI_OMNI_1_1_FLASH,
+        duration_seconds=10,
+        resolution="4K",
+    )
+    assert dto_omni_11.duration_seconds == 10
+    assert dto_omni_11.resolution == "4K"
+    assert dto_omni_11.generation_model.value == "gemini-omni-1.1-flash"
+
     # 10s is valid for Gemini Omni Flash Preview
     dto_flash = CreateVeoDto(
         prompt="Test",

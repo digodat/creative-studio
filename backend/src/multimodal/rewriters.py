@@ -217,7 +217,7 @@ REWRITE_VIDEO_JSON_PROMPT_TEMPLATE = """Write a prompt for a text-to-video model
 Do not generate videos, provide only the rewritten prompt.
 
 **Crucial Instructions:**
-1. **Target Model**: If a 'Target Model' or 'Generation Model' is specified in the user's prompt (e.g., 'gemini-omni-flash-preview', 'Gemini Omni Flash', 'veo-3.1-generate-001', 'Veo'), you **MUST** use that exact model identifier or name for the 'target_model' field in the JSON output. Do not replace it.
+1. **Target Model**: If a 'Target Model' or 'Generation Model' is specified in the user's prompt (e.g., 'gemini-omni-1.1-flash', 'Gemini Omni 1.1 Flash', 'gemini-omni-flash-preview', 'Gemini Omni Flash', 'veo-3.1-generate-001', 'Veo'), you **MUST** use that exact model identifier or name for the 'target_model' field in the JSON output. Do not replace it.
 2. **Aspect Ratio**: If an 'Aspect Ratio' (e.g., '9:16', '16:9', '1:1') is specified in the user's prompt, you **MUST** strictly adhere to it in 'resolution_and_format', camera directives, and 'final_summary_prompt'.
    - If '9:16' (portrait/vertical) is specified, you MUST specify '9:16 portrait' (vertical format) in 'resolution_and_format' and describe a vertical video in 'final_summary_prompt'. NEVER return 16:9 widescreen when 9:16 is requested.
    - If '16:9' (landscape/horizontal) is specified, specify '16:9 widescreen' in 'resolution_and_format'.

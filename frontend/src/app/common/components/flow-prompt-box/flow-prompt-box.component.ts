@@ -30,7 +30,10 @@ import {
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ReferenceImage} from '../../models/search.model';
-import {GenerationModelConfig} from '../../config/model-config';
+import {
+  GenerationModelConfig,
+  isGeminiOmniFlash,
+} from '../../config/model-config';
 import {MatIconModule} from '@angular/material/icon';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
@@ -323,6 +326,10 @@ export class FlowPromptBoxComponent implements OnInit, OnDestroy {
     return this.generationModelsSignal().find(
       m => m.viewValue === this.selectedGenerationModelSignal(),
     );
+  }
+
+  isGeminiOmniFlashSelected(): boolean {
+    return isGeminiOmniFlash(this.getSelectedModelObject()?.value);
   }
 
   getSelectedModelResolutions(model?: any): ('1K' | '2K' | '4K')[] {
